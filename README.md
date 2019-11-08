@@ -40,15 +40,3 @@ request.get('/').then(res => {
 	console.log(res)
 })
 ```
-
-或者：
-
-```javascript
-const storage = new WebStorageProxy('sessionStorage')
-storage.data= {
-	name: 'yinchengnuo',
-	age: 23,
-	skills: ['web', 'guitar']
-}
-console.log(sessionStorage.getItem('data'))  //"{"name":"yinchengnuo","age":23,"skills":["web","guitar"]}"
-```
