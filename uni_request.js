@@ -1,4 +1,4 @@
-export default function ({ baseURL, timeout }) {
+export default function ({ baseURL, timeout, headers }) {
 	return new Proxy({
 		get(url, data) {
 			return this.request('GET', url, data)
@@ -31,7 +31,7 @@ export default function ({ baseURL, timeout }) {
 				    url: baseURL + url,
 				    data,
 					method,
-					header: { ...this.interceptors.request.intercept({ headers: {} }, method, url, data).headers },
+					header: { ...this.interceptors.request.intercept({ headers: headers || {} }, method, url, data).headers },
 				    success: res => {
 						clearTimeout(timer)
 						if (res.statusCode === 200) {
@@ -41,9 +41,10 @@ export default function ({ baseURL, timeout }) {
 							reject(res)
 						}
 				    },
-					fail: () => {
-						console.error( '网络请求失败：（网络|DNS解析失败）')
-						reject('网络请求失败：（网络|DNS解析失败）')
+					fail: res => {
+						clearTimeout(timer)
+						console.error('网络请求失败：（URL无效|无网络|DNS解析失败）')
+						reject('网络请求失败：（URL无效|无网络|DNS解析失败）')
 					}
 				})
 				timer = setTimeout(() => {
