@@ -12,9 +12,12 @@
 ```javascript
 import uni_request from './uni_request.js'
 
-const request = uni_request({ // 有效配置项只有两个
+const request = uni_request({ // 有效配置项只有三个
 	baseURL: 'http://192.168.0.13/dwbsapp', //baseURL
-	timeout: 1111 // 超时时间 
+	timeout: 1111, // 超时时间
+	heaers: {
+		'x-custom-header': 'x-custom-header'
+	}
 })
 
 request.interceptors.request.use(config => { // 请求拦截器（可以设置多个）
