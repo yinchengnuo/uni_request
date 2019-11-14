@@ -13,17 +13,16 @@ export default function ({ baseURL, timeout, headers }) {
 			let timer, requestTask, _watcher = { cancelHandle: null, cancel: () => _watcher.cancelHandle() }
 			return new Proxy(new Promise((resolve, reject) => {
 				requestTask = uni.request({
-				    url: baseURL + url,
-				    data,
-					method,
+				  url: baseURL + url, data, method,
 					header: { ...this.interceptors.request.intercept({ headers: headers || {} }, method, url, data).headers },
-				    success: res => {
+				  success: res => {
 						clearTimeout(timer)
 						res.statusCode === 200 ? resolve(this.interceptors.response.intercept(res, method, url, data)) : reject(res)
-				    },
-					fail: res => {
+				  },
+					fail: () => {
 						clearTimeout(timer)
-						_watcher.abort ? reject('网络请求失败：主动取消') : reject('网络请求失败：（URL无效|无网络|DNS解析失败）')
+            _watcher.abort ? reject('网络请求失败：主动取消') : reject('网络请求失败：（URL无效|无网络|DNS解析失败）')
+            _watcher.abort= false
 					}
 				})
 				timer = setTimeout(() => {
