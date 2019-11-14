@@ -1,6 +1,6 @@
 # 欢迎使用 uni_request.js
 
-最近在使用uni-app开发应用，因为用axios用的太顺手了，就对uni.request方法做了一个封装，使其使用起来和axios方法和效果一样。因为是自己现做现用，api设计的都比较简单，代码不也不复杂，但是却很实用。如有BUG，还请不吝指出，非常感谢
+最近在使用uni-app开发应用，因为用axios用的太顺手了，就对uni.request方法做了一个封装，使其使用起来和axios的方法和效果一样。因为是自己现做现用，api设计的都比较简单，代码不也不复杂，但是却很实用。如有BUG，还请不吝指出，非常感谢。
 
 ----
 
@@ -41,5 +41,12 @@ request.overtime = () => { // 超时钩子函数（可以设置多个）
 
 request.get('/').then(res => {
 	console.log(res)
-})
+}).catch(e => console.error(e))
+
+const task = request.get('/cancel')
+task.then(res => {
+	console.log(res)
+}).catch(e => console.error(e))
+task.cancel() // 网络请求失败：主动取消
+
 ```
