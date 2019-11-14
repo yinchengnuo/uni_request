@@ -43,10 +43,11 @@ request.get('/').then(res => {
 	console.log(res)
 }).catch(e => console.error(e))
 
-const task = request.get('/cancel')
+// 取消一个请求
+const task = request.get('/cancel') // 如果想要取消某个请求，需要在 then 之前将 request.get 方法返回的 promise 对象保存在一个变量里
 task.then(res => {
 	console.log(res)
-}).catch(e => console.error(e))
-task.cancel() // 网络请求失败：主动取消
+}).catch(e => console.error(e)) // 网络请求失败：主动取消
+task.cancel() // 在需要的时候调用 cancel 方法，会使当前网络请求取消并且使 request.get 方法返回的 promise 进入 reject 状态，可被 catch 捕获，错误信息为 【网络请求失败：主动取消】
 
 ```
