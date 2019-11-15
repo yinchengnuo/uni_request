@@ -2,6 +2,8 @@
 
 最近在使用uni-app开发应用，因为用axios用的太顺手了，就对uni.request方法做了一个封装，使其使用起来和axios的方法和效果一样。因为是自己现做现用，api设计的都比较简单，代码不也不复杂，但是却很实用。如有BUG，还请不吝指出，非常感谢。
 
+PS: 有人知道 Proxy 一个原生 Promise 对象时不能调用 then 等方法是为什么嘛？ 会报错 TypeError: Method Promise.prototype.then called on incompatible receiver [object Object] 。在 uniapp 开发时 浏览器和微信小程序开发工具都会报错，但是app不会。我猜可能是 Promise 的原因，加了一个 Promise polyfill 就好了。如有大神知道，还请不吝留下评论或联系本人。微信：18338112210。非常感谢！
+
 ----
 
 
