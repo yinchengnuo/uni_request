@@ -21,7 +21,7 @@ export default function ({ baseURL, timeout, headers }) {
 					header: { ...this.interceptors.request.intercept({ headers: headers || {} }, method, url, data).headers },
 				    success: res => {
 						clearTimeout(timer)
-						res.statusCode === 200 ? resolve(this.interceptors.response.intercept(res, method, url, data)) : reject(res)
+						res.statusCode === 200 ? resolve(this.interceptors.response.intercept(res, method, url, data)) : reject(this.interceptors.response.intercept(res, method, url, data))
 				    },
 					fail: res => {
 						clearTimeout(timer)
