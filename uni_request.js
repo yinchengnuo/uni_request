@@ -45,16 +45,16 @@ export default function ({ baseURL, timeout, headers }) {
 			request: {
 				interceptors: [],
 				use(fun) { this.interceptors.push(fun) },
-				intercept(config) {
-					this.interceptors.forEach(fun => config = fun(config))
+				intercept(config, method, url, data) {
+					this.interceptors.forEach(fun => config = fun(config, method, url, data))
 					return config
 				}
 			},
 			response: {
 				interceptors: [],
 				use(fun) { this.interceptors.push(fun) },
-				intercept(response) {
-					this.interceptors.forEach(fun => response = fun(response))
+				intercept(response, method, url, data) {
+					this.interceptors.forEach(fun => response = fun(response, method, url, data))
 					return response.data
 				}
 			}

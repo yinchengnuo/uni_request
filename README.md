@@ -22,14 +22,14 @@ const request = uni_request({ // 有效配置项只有三个
 	}
 })
 
-request.interceptors.request.use(config => { // 请求拦截器（可以设置多个）
-	console.log('请求拦截器')
+request.interceptors.request.use((config, ...args) => { // 请求拦截器（可以设置多个）
+	console.log('请求拦截器') // args[0] method args[1] url args[3] data
 	config.headers.TEST = 'TEST'
 	return config
 })
 
-request.interceptors.response.use(response => { // 响应拦截器（可以设置多个）
-	const { data: res } = response
+request.interceptors.response.use((response, ...args) => { // 响应拦截器（可以设置多个）
+	const { data: res } = response // args[0] method args[1] url args[3] data
 	if (res.code === 200) {
 		console.log('响应拦截器')
 	}
