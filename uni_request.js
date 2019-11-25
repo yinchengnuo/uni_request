@@ -10,6 +10,7 @@ export default function ({ baseURL, timeout, headers }) {
 		head(url, data) { return this.request('HEAD', url, data) },
 		options(url, data) { return this.request('OPTIONS', url, data) },
 		reace(url, data) { return this.request('TRACE', url, data) },
+		onerror: [],
 		overtime: [],
 		request(method, url, data) {
 			let timer, requestTask, _watcher = { cancelHandle: null, cancel: () => _watcher.cancelHandle() }
@@ -25,13 +26,14 @@ export default function ({ baseURL, timeout, headers }) {
 				    },
 					fail: res => {
 						clearTimeout(timer)
-						_watcher.abort ? reject('网络请求失败：主动取消') : reject('网络请求失败：（URL无效|无网络|DNS解析失败）')
+						_watcher.abort ? reject('网络请求失败：主动取消') : reject('网络请求失败：（URL无效|无网络|DNS解析失败|请求时间过长）')
+						this.onerror.forEach(e => e(method, url, data, _watcher.abort ? '网络请求失败：主动取消' : '网络请求失败：（URL无效|无网络|DNS解析失败|请求时间过长）'))
 					}
 				})
 				timer = setTimeout(() => {
 					requestTask.abort()
 					reject('网络请求时间超时')
-					this.overtime.forEach(e => e())
+					this.overtime.forEach(e => e(method, url, data))
 				}, timeout)
 				_watcher.cancelHandle = () => {
 					_watcher.abort= true
@@ -57,5 +59,5 @@ export default function ({ baseURL, timeout, headers }) {
 				}
 			}
 		}
-	}, { set: (target, prop, value) => prop === 'overtime' ? target.overtime.push(value) : true })
+	}, { set: (target, prop, value) => target[prop] ? target[prop].push(value) : true })
 }
