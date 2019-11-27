@@ -41,7 +41,7 @@ request.overtime = (...args) => { // 超时钩子函数（可以设置多个）
 	console.log('超时了')
 }
 
-request.onerror = (...args) => { // 请求失败统一处理方法（可以设置多个）
+request. onerror = (...args) => { // 请求失败统一处理方法（可以设置多个）
 	console.log('网络请求失败了', `url为${args[1]}`)
 }
 
@@ -57,3 +57,6 @@ task.then(res => {
 task.cancel() // 在需要的时候调用 cancel 方法，会使当前网络请求取消并且使 request.get 方法返回的 promise 进入 reject 状态，可被 catch 捕获，错误信息为 【网络请求失败：主动取消】
 
 ```
+
+request. onerror = (...args) => { ... }
+

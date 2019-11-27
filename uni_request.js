@@ -16,7 +16,7 @@ export default function ({ baseURL, timeout, headers }) {
 			let timer, requestTask, _watcher = { cancelHandle: null, cancel: () => _watcher.cancelHandle() }
 			return new Proxy(new MyPromise((resolve, reject) => {
 				requestTask = uni.request({
-				    url: baseURL + url,
+				    url: url[0] === '/' ? baseURL + url : url,
 				    data,
 					method,
 					header: { ...this.interceptors.request.intercept({ headers: headers || {} }, method, url, data).headers },
