@@ -45,7 +45,11 @@ request.onerror = (...args) => { // 请求失败统一处理方法（可以设�
 	console.log('网络请求失败了', `url为${args[1]}`)
 }
 
-request.get('/').then(res => {
+request.get('/').then(res => { // 默认使用实例化时配置的 baseURL
+	console.log(res)
+}).catch(e => console.error(e))
+
+request.get('http://xxx.com').then(res => { // 也可以使用配置的 baseURL 之外的 url，但是注意 url 路径要写完整
 	console.log(res)
 }).catch(e => console.error(e))
 
