@@ -41,7 +41,7 @@ request.overtime = (...args) => { // 超时钩子函数（可以设置多个）
 	console.log('超时了')
 }
 
-request. onerror = (...args) => { // 请求失败统一处理方法（可以设置多个）
+request.onerror = (...args) => { // 请求失败统一处理方法（可以设置多个）
 	console.log('网络请求失败了', `url为${args[1]}`)
 }
 
@@ -58,5 +58,9 @@ task.cancel() // 在需要的时候调用 cancel 方法，会使当前网络请�
 
 ```
 
-request. onerror = (...args) => { ... }
+OnerrOr
+
+![onerror](https://raw.githubusercontent.com/yinchengnuo/uni_request/master/onerror.png)
+
+##### request.onerror = (...args) => { ... }
 
