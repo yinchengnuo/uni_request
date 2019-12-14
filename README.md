@@ -22,26 +22,27 @@ const request = uni_request({ // 有效配置项只有三个
 	}
 })
 
-request.interceptors.request.use((config, ...args) => { // 请求拦截器（可以设置多个）
-	console.log('请求拦截器') // args[0] method args[1] url args[3] data
-	config.headers.TEST = 'TEST'
+request.interceptors.request.use(async (config, ...args) => { // 请求拦截器（可以设置多个, 同时可以也可以使用异步方法）
+	await new Promise(resolve => setTimeout(() => resolve(), 3000))
+	console.log('请求拦截器, 网络请求会等 3 秒后上面的异步任务结束后执行') // args[0] method args[1] url args[3] data
 	return config
 })
 
-request.interceptors.response.use((response, ...args) => { // 响应拦截器（可以设置多个）
+request.interceptors.response.use((response, ...args) => { // 响应拦截器（可以设置多个, 同时可以也可以使用异步方法）
 	const { data: res } = response // args[0] method args[1] url args[3] data
+	await new Promise(resolve => setTimeout(() => resolve(), 3000))
 	if (res.code === 200) {
-		console.log('响应拦截器')
+		console.log('响应拦截器， 会阻塞 3 s')
 	}
 	return response
 })
 
 
-request.overtime = (...args) => { // 超时钩子函数（可以设置多个）
+request.overtime = (...args) => { // 超时钩子函数（可以设置多个, 同时可以也可以使用异步方法）
 	console.log('超时了')
 }
 
-request.onerror = (...args) => { // 请求失败统一处理方法（可以设置多个）
+request.onerror = (...args) => { // 请求失败统一处理方法（可以设置多个, 同时可以也可以使用异步方法）
 	console.log('网络请求失败了', `url为${args[1]}`)
 }
 
@@ -58,7 +59,11 @@ const task = request.get('/cancel') // 如果想要取消某个请求，需要�
 task.then(res => {
 	console.log(res)
 }).catch(e => console.error(e)) // 网络请求失败：主动取消
-task.cancel() // 在需要的时候调用 cancel 方法，会使当前网络请求取消并且使 request.get 方法返回的 promise 进入 reject 状态，可被 catch 捕获，错误信息为 【网络请求失败：主动取消】
+task.cancel() 
+// 在需要的时候调用 cancel 方法
+// 会使当前网络请求取消并且使 request.get 方法返回的 promise 进入 reject 状态
+// 可被 catch 捕获，错误信息为 【网络请求失败：主动取消】
+// 如果在请求拦截器的异步期间取消，那么会在请求拦截器的异步操作结束后直接使返回的 Promise 进入 reject 状态，并不会发出网络请求
 
 ```
 
