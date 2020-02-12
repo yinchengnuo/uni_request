@@ -150,13 +150,10 @@ task.then(res => {
 }).catch(e => console.error(e))
 
 fileU.onProgressUpdate(e => console.log(e)) // { progress: 2， totalBytesExpectedToSend: 1254676， totalBytesSent: 35244 }
-
-task.abort() // 取消上传/下载
 ```
 
-Onerror
+onerror
 
 ![onerror](https://raw.githubusercontent.com/yinchengnuo/uni_request/master/mde.png)
 
-##### request.onerror = (...args) => { ... }
 
