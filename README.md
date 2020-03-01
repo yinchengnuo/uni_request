@@ -24,7 +24,7 @@ import uni_request from './uni_request.js'
 const request = uni_request({ // 有效配置项只有三个
 	baseURL: 'http://192.168.0.13/dwbsapp', //baseURL
 	timeout: 1111, // 超时时间
-	heaer: { 'x-custom-header': 'x-custom-header' } // 设置请求头，建议放在请求拦截器中
+	header: { 'x-custom-header': 'x-custom-header' } // 设置请求头，建议放在请求拦截器中
 })
 ```
 ## 请求拦截器
