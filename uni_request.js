@@ -101,7 +101,7 @@ export default function ({ baseURL, timeout, header }) {
 					for (let i = 0; i < this.interceptors.length; i ++) {
 						response = await this.interceptors[i](response, method, url, data)
 					}
-					return STATUS(method === 'downloadFile' ? response : response.data)
+					return STATUS(typeof response.data === 'string' ? JSON.parse(response.data) : response.data)
 				}
 			}
 		}
