@@ -152,6 +152,10 @@ task.then(res => {
 fileU.onProgressUpdate(e => console.log(e)) // { progress: 2， totalBytesExpectedToSend: 1254676， totalBytesSent: 35244 }
 ```
 
+### 注意事项
+
+#### 所有服务器响应不为 200 的请求会被视为请求失败，可以 catch 和被 onerror 监听
+
 onerror
 
 ![onerror](https://raw.githubusercontent.com/yinchengnuo/uni_request/master/mde.png)
