@@ -16,7 +16,7 @@ export default function ({ baseURL, timeout, header }) {
 				aborted = true // 将请求状态标记为已取消
 				requestTask ? requestTask.abort() : '' // 执行取消请求方法
 			}, progressUpdateHandle, onProgressUpdate = e => progressUpdateHandle = e // progressUpdateHandle 监听上传进度变化回调，onProgressUpdate 监听上传进度变化方法
-			const promise = new Promise((resolve, reject) => { // 返回经过 Proxy 后的 Promise 对象使其可以监听到是否调用 abort 和 onProgressUpdate 方法
+			return new Proxy(new Promise((resolve, reject) => { // 返回经过 Proxy 后的 Promise 对象使其可以监听到是否调用 abort 和 onProgressUpdate 方法
 				this.interceptors.request.intercept({ header: data.header || {}, body: data.formData || {} }, method, url, data).then(async ({ header, body }) => { // 等待请求拦截器里的方法执行完
 					if (aborted) { // 如果请求已被取消,停止执行,返回 reject
 						await this.onerror(method, url, data, '网络请求失败：主动取消')
@@ -46,15 +46,14 @@ export default function ({ baseURL, timeout, header }) {
 						reject('网络请求时间超时') // reject 原因
 					}, timeout  || 12345) // 设定检测超时定时器
 				})
-			})
-			return new Proxy(promise, { get: (target, prop) => prop === 'abort' ? abort : prop === 'onProgressUpdate' ? onProgressUpdate : Reflect.get(target, prop).bind(promise) }) // 如果调用 cancel 方法,返回 _watcher.cancel 方法
+			}), { get: (target, prop) => prop === 'abort' ? abort : prop === 'onProgressUpdate' ? onProgressUpdate : Reflect.get(target, prop).bind(target) }) // 如果调用 cancel 方法,返回 _watcher.cancel 方法
 		},
 		request(method, url, data) {
 			let timer, requestTask, aborted = false, abort = () => { // timer 检测超时定时器，requestTask 网络请求 task 对象，aborted 请求是否已被取消，abort 取消请求方法
 				aborted = true // 将请求状态标记为已取消
 				requestTask ? requestTask.abort() : '' // 执行取消请求方法
 			}
-			const promise = new Promise((resolve, reject) => { // 返回经过 Proxy 后的 Promise 对象使其可以监听到是否调用 abort 方法
+			return new Proxy(new Promise((resolve, reject) => { // 返回经过 Proxy 后的 Promise 对象使其可以监听到是否调用 abort 方法
 				this.interceptors.request.intercept({ header: header || {}, body: data || {} }, method, url, data).then(async ({ header, body: data }) => { // 等待请求拦截器里的方法执行完
 					if (aborted) { // 如果请求已被取消,停止执行,返回 reject
 						await this.onerror(method, url, data, '网络请求失败：主动取消')
@@ -80,8 +79,7 @@ export default function ({ baseURL, timeout, header }) {
 						reject('网络请求时间超时') // reject 原因
 					}, timeout  || 12345) // 设定检测超时定时器
 				})
-			})
-			return new Proxy(promise, { get: (target, prop) => prop === 'abort' ? abort : Reflect.get(target, prop).bind(promise) }) // 如果调用 abort 方法,返回 abort 方法
+			}), { get: (target, prop) => prop === 'abort' ? abort : Reflect.get(target, prop).bind(target) }) // 如果调用 abort 方法,返回 abort 方法
 		},
 		interceptors: { // 拦截器
 			request: {
