@@ -25,12 +25,12 @@ const request = uni_request({ // 有效配置项只有三个
 	baseURL: 'http://192.168.0.13/dwbsapp', //baseURL
 	timeout: 1111, // 超时时间
 	header: { 'x-custom-header': 'x-custom-header' }, // 设置请求头，建议放在请求拦截器中
-	statusCode: [200, 401] // 服务器相应状态码为 200/401 时，网络请求不会 reject
+	statusCode: [200, 401] // 服务器相应状态码为 200/401 时，网络请求不会 reject。也就是不会被 catch 到。如响应 401 时可以在响应拦截后 await 刷新 token + await 重新请求 + return response。即可实现无痛刷新。 
 })
 ```
 ## 请求拦截器
 
-可以设置多个, 同时可以也可以使用异步方法。拦截器回调函数接受4个参数，分别是 config, method, url, data。其中 config 中包含请求头和请求体（ uploadFile()请求的请求体只包含 formData 部分），可以修改：
+可以设置多个, 同时可以也可以使用异步方法。拦截器回调函数接受4个参数，分别是 config, method, url, data。其中 config 中包含请求头和请求体（ uploadFile()请求的请求体只包含 formData 部分），同时也可以在请求拦截器中取消请求：
 
 ```javascript
 
@@ -39,6 +39,7 @@ request.interceptors.request.use(async (config, ...args) => {
 	console.log('请求拦截器, 网络请求会等 3 秒后上面的异步任务结束后执行') // args[0] method args[1] url args[3] data
 	config.header.Authorization = 'Bearer ' + $store.state.app.token // 修改请求头
 	config.body.test = 'test' // 修改请求体
+	// config.cancel = true // 取消请求
 	return config
 })
 
@@ -79,6 +80,22 @@ request.get('/').then(res => {
 request.get('http://xxx.com').then(res => { // 也可以使用配置的 baseURL 之外的 url，但是注意 url 路径要写完整
 	console.log(res)
 }).catch(e => console.error(e))
+```
+
+## 高级使用
+request[method] 最多可以接受 5 个参数。本别是：
+|  参数   | 类型  |备注  |默认值|
+|  ----  | ----  | ----  |----|
+| url  | String |url |必填 |
+| data  | Object |data |{} |
+| header  | Object |自定义请求头 |{} |
+| reqIntercept  | Boolean |是否被请求拦截器拦截 |false |
+| resIntercept  | Boolean |是否被响应拦截器拦截 |false |
+
+```javascript
+request.get('/', { name: 'zhangsan' }, { 'Content-Type': 'application/x-www-form-urlencoded' }, true, true).then(res => {
+	console.log(res)
+}).catch(e => console.error(e)) // 此请求不被被任意拦截器拦截
 ```
 
 ## 取消请求
@@ -155,7 +172,7 @@ fileU.onProgressUpdate(e => console.log(e)) // { progress: 2， totalBytesExpect
 
 ### 注意事项
 
-#### 所有服务器响应不为 200 的请求会被视为请求失败，可以 catch 和被 onerror 监听
+#### 默认所有服务器响应不为 [200, 401] 的请求会被视为请求失败，会被 catch 和被 onerror 监听，如果想要更多请求不被 catch 。可以在实例化时配置 statusCode: [201, 302, ...]
 
 onerror
 
