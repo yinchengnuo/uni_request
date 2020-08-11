@@ -122,7 +122,7 @@ export default function ({ baseURL, timeout = 56 * 1000, header: headers, status
 		interceptors: { // 拦截器
 			request: {
 				interceptors: [],
-				use(fun, err) { this.interceptors.push(fun) },
+				use(fun) { this.interceptors.push(fun) },
 				async intercept(config, method, url, data, reqIntercept) {
 					if (!reqIntercept) { // 如果请求允许被拦截
 						for (let i = 0; i < this.interceptors.length; i ++) {
@@ -134,7 +134,7 @@ export default function ({ baseURL, timeout = 56 * 1000, header: headers, status
 			},
 			response: {
 				interceptors: [],
-				use(fun, err) { this.interceptors.push(fun) },
+				use(fun) { this.interceptors.push(fun) },
 				async intercept(STATUS, response, method, url, data, reject, resIntercept) {
 					try{
 						if (!resIntercept) { // 如果请求允许被拦截
